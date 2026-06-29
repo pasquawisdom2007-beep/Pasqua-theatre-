@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pasqua Theatre — Film Database</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+
+<div id="loader">
+  <div class="boot-logo">PASQUA THEATRE</div>
+  <div class="boot-lines"></div>
+  <div class="progress-bar-wrap"><div class="progress-bar"></div></div>
+</div>
+
+<div id="dl-overlay">
+  <div class="dl-title">▸ INITIATING SECURE DOWNLOAD</div>
+  <div class="dl-lines"></div>
+  <div class="dl-bar-wrap"><div class="dl-bar"></div></div>
+</div>
+
+<nav>
+  <a href="/" class="nav-logo">PASQUA THEATRE</a>
+  <ul class="nav-links">
+    <li><a href="/">HOME</a></li>
+    <li><a href="/movies">MOVIES</a></li>
+    <li><a href="/music">MUSIC</a></li>
+    <li><a href="/library">LIBRARY</a></li>
+    <li><a href="/about">ABOUT</a></li>
+  </ul>
+  <button class="nav-burger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="mobile-menu">
+  <a href="/">HOME</a>
+  <a href="/movies">MOVIES</a>
+  <a href="/music">MUSIC</a>
+  <a href="/library">LIBRARY</a>
+  <a href="/about">ABOUT</a>
+</div>
+
+<main>
+  <div class="page-header fade-in-after-load">
+    <div class="section-label">> FILM DATABASE // PREXZY NODE ACTIVE</div>
+    <h1 class="page-title">FILM <span>ARCHIVE</span></h1>
+    <p class="page-desc">Search any movie. Lock the signal. Download clean.</p>
+  </div>
+
+  <section class="section fade-in-after-load">
+
+    <!-- SEARCH -->
+    <div class="search-wrap" style="position:relative;">
+      <span class="search-icon">⌕</span>
+      <input type="text" class="search-input" id="search"
+        placeholder="> SEARCH FILM DATABASE... (e.g. Spiderman, Avatar, Inception)"
+        autocomplete="off">
+      <div id="search-spinner" style="
+        display:none;position:absolute;right:16px;top:50%;transform:translateY(-50%);
+        font-size:0.7rem;color:var(--cyan);letter-spacing:0.1em;animation:blink 1s infinite;">
+        SCANNING...
+      </div>
+    </div>
+
+    <!-- STATUS LINE -->
+    <div id="result-count" style="font-size:0.7rem;color:var(--text-dim);letter-spacing:0.1em;margin-bottom:24px;">
+      > TYPE TO SEARCH THE FILM DATABASE
+    </div>
+
+    <!-- RESULTS GRID -->
+    <div class="cards-grid" id="movies-grid">
+      <div style="color:var(--text-dim);font-size:0.8rem;padding:60px 0;grid-column:1/-1;text-align:center;">
+        <div style="font-size:2rem;margin-bottom:16px;opacity:0.3;">⌕</div>
+        <div>> AWAITING QUERY — ENTER A TITLE ABOVE</div>
+      </div>
+    </div>
+
+  </section>
+</main>
+
+<script src="/js/main.js"></script>
+<script>
+const SEARCH_API = 'https://docs.prexzyapis.com/moviesearch?query=';
+
+function prexzyCard(item) {
+  const title = item.title || item.name || item.movie_title || 'Untitled';
+  const poster = item.poster || item.image || item.thumbnail || item.cover || item.backdrop || '';
+  const year = item.year || item.release_year || item.release_date?.slice(0,4) || '';
+  const rating = item.rating || item.vote_average || item.imdb_rating || '';
+  const genre = item.genre || item.genres?.[0] || item.type || item.category || '';
+  const id = item.id || item._id || Math.random();
+  const downloadUrl = item.download || item.downloadUrl || item.link || item.url || '#';
+  const description = item.description || item.overview || item.plot || '';
+
+  const safeItem = JSON.stringify({ id, title, type: 'movie', cover: poster }).replace(/"/g, '&quot;');
+
+  return `
+    <div class="card fade-in">
+      <div class="corner-decoration corner-tl"></div>
+      <div class="corner-decoration corner-br"></div>
+      ${poster
+        ? `<img class="card-poster" src="${poster}" alt="${title}" loading="lazy"
+             onerror="this.style.background='var(--bg3)';this.style.display='flex';this.outerHTML='<div class=\'card-poster\' style=\'background:var(--bg3);display:flex;align-items:center;justify-content:center;color:var(--text-dim);font-size:0.6rem;padding:8px;text-align:center;\'>${title}</div>'">`
+        : `<div class="card-poster" style="background:var(--bg3);display:flex;align-items:center;justify-content:center;color:var(--text-dim);font-size:0.6rem;padding:8px;text-align:center;">${title}</div>`
+      }
+      <div class="card-body">
+        <div class="card-title">${title}</div>
+        <div class="card-meta">
+          ${genre ? `<span class="tag">${genre}</span>` : ''}
+          ${year ? `<span class="tag tag-cyan">${year}</span>` : ''}
+          ${rating ? `<span class="card-rating">★ ${typeof rating === 'number' ? rating.toFixed(1) : rating}</span>` : ''}
+        </div>
+        ${description ? `<div style="font-size:0.62rem;color:var(--text-dim);margin-bottom:10px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${description}</div>` : ''}
+        <button class="btn btn-dl" style="width:100%;justify-content:center;"
+          data-download="${downloadUrl}" data-name="${title}" data-type="movies" data-item="${safeItem}">
+          ⬇ DOWNLOAD
+        </button>
+      </div>
+    </div>`;
+}
+
+async function doSearch(query) {
+  if (!query || query.length < 2) {
+    document.getElementById('movies-grid').innerHTML = `
+      <div style="color:var(--text-dim);font-size:0.8rem;padding:60px 0;grid-column:1/-1;text-align:center;">
+        <div style="font-size:2rem;margin-bottom:16px;opacity:0.3;">⌕</div>
+        <div>> AWAITING QUERY — ENTER A TITLE ABOVE</div>
+      </div>`;
+    document.getElementById('result-count').textContent = '> TYPE TO SEARCH THE FILM DATABASE';
+    return;
+  }
+
+  const spinner = document.getElementById('search-spinner');
+  const grid = document.getElementById('movies-grid');
+  const count = document.getElementById('result-count');
+
+  spinner.style.display = 'block';
+  count.textContent = `> SCANNING DATABASE FOR "${query.toUpperCase()}"...`;
+  grid.innerHTML = `<div style="color:var(--cyan);font-size:0.75rem;padding:40px 0;grid-column:1/-1;animation:blink 1s infinite;"> > QUERYING PREXZY NODE...</div>`;
+
+  try {
+    const res = await fetch(SEARCH_API + encodeURIComponent(query));
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+
+    spinner.style.display = 'none';
+
+    // Handle prexzy response shape: { status, results: [] }
+    const results = data.results || data.movies || data.data ||
+                    (Array.isArray(data) ? data : []);
+
+    if (!results.length) {
+      count.textContent = `> 0 RESULTS FOR "${query.toUpperCase()}"`;
+      grid.innerHTML = `
+        <div style="color:var(--text-dim);font-size:0.8rem;padding:60px 0;grid-column:1/-1;text-align:center;">
+          <div style="font-size:2rem;margin-bottom:16px;opacity:0.2;">◻</div>
+          <div>> NO SIGNALS FOUND FOR "${query.toUpperCase()}"</div>
+          <div style="font-size:0.65rem;margin-top:8px;color:var(--text-dim);">Try a different title or check spelling</div>
+        </div>`;
+      return;
+    }
+
+    count.textContent = `> ${data.total_results || results.length} RESULT${results.length !== 1 ? 'S' : ''} FOR "${query.toUpperCase()}"`;
+    grid.innerHTML = results.map(prexzyCard).join('');
+
+  } catch (err) {
+    spinner.style.display = 'none';
+    count.textContent = `> SEARCH NODE ERROR`;
+    grid.innerHTML = `
+      <div style="color:var(--pink);font-size:0.75rem;padding:40px 0;grid-column:1/-1;">
+        > NODE UNREACHABLE: ${err.message}<br>
+        <span style="color:var(--text-dim);font-size:0.65rem;"> Check network or API status at docs.prexzyapis.com</span>
+      </div>`;
+  }
+}
+
+// Debounced search — fires 500ms after user stops typing
+let searchTimer;
+document.getElementById('search').addEventListener('input', e => {
+  clearTimeout(searchTimer);
+  const val = e.target.value.trim();
+  searchTimer = setTimeout(() => doSearch(val), 500);
+});
+
+// Also fire on Enter immediately
+document.getElementById('search').addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    clearTimeout(searchTimer);
+    doSearch(e.target.value.trim());
+  }
+});
+</script>
+</body>
+</html>

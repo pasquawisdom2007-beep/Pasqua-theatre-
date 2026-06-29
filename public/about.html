@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pasqua Theatre — About</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .about-wrap {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 100px 24px 80px;
+    }
+    .terminal-window {
+      background: rgba(0,0,0,0.7);
+      border: 1px solid var(--border-glow);
+      backdrop-filter: blur(16px);
+      margin-bottom: 40px;
+    }
+    .terminal-topbar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border-glow);
+      background: rgba(0,245,255,0.04);
+    }
+    .terminal-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+    }
+    .t-red { background: #ff5f57; }
+    .t-yellow { background: #febc2e; }
+    .t-green-dot { background: #28c840; }
+    .terminal-title {
+      font-size: 0.65rem;
+      color: var(--text-dim);
+      letter-spacing: 0.15em;
+      margin-left: 8px;
+    }
+    .terminal-body {
+      padding: 28px 32px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: clamp(0.7rem, 2vw, 0.85rem);
+      line-height: 2;
+    }
+    .t-line { opacity: 0; transition: opacity 0.3s; }
+    .t-prompt { color: var(--cyan); }
+    .t-comment { color: var(--text-dim); }
+    .t-value { color: var(--green); }
+    .t-key { color: var(--purple); }
+    .t-warn { color: var(--pink); }
+    .t-blank { height: 1em; }
+
+    .ascii-section {
+      text-align: center;
+      padding: 40px 0;
+    }
+
+    .contact-row {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 32px;
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+
+<div id="loader">
+  <div class="boot-logo">PASQUA THEATRE</div>
+  <div class="boot-lines"></div>
+  <div class="progress-bar-wrap"><div class="progress-bar"></div></div>
+</div>
+
+<div id="dl-overlay">
+  <div class="dl-title">▸ INITIATING SECURE DOWNLOAD</div>
+  <div class="dl-lines"></div>
+  <div class="dl-bar-wrap"><div class="dl-bar"></div></div>
+</div>
+
+<nav>
+  <a href="/" class="nav-logo">PASQUA THEATRE</a>
+  <ul class="nav-links">
+    <li><a href="/">HOME</a></li>
+    <li><a href="/movies">MOVIES</a></li>
+    <li><a href="/music">MUSIC</a></li>
+    <li><a href="/library">LIBRARY</a></li>
+    <li><a href="/about">ABOUT</a></li>
+  </ul>
+  <button class="nav-burger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="mobile-menu">
+  <a href="/">HOME</a>
+  <a href="/movies">MOVIES</a>
+  <a href="/music">MUSIC</a>
+  <a href="/library">LIBRARY</a>
+  <a href="/about">ABOUT</a>
+</div>
+
+<main>
+  <div class="about-wrap fade-in-after-load">
+    <div class="section-label" style="margin-bottom:12px;">> SYSTEM MANIFEST // READ ONLY</div>
+    <h1 class="page-title" style="margin-bottom:40px;">ABOUT <span>THIS NODE</span></h1>
+
+    <!-- TERMINAL WINDOW 1 -->
+    <div class="terminal-window">
+      <div class="terminal-topbar">
+        <div class="terminal-dot t-red"></div>
+        <div class="terminal-dot t-yellow"></div>
+        <div class="terminal-dot t-green-dot"></div>
+        <span class="terminal-title">pasqua-theatre :: manifest.sh</span>
+      </div>
+      <div class="terminal-body" id="term1">
+        <div class="t-line t-comment"># ── PASQUA THEATRE v1.0 ── SYSTEM MANIFEST ──</div>
+        <div class="t-blank"></div>
+        <div class="t-line"><span class="t-prompt">$</span> cat system/identity.json</div>
+        <div class="t-blank"></div>
+        <div class="t-line"><span class="t-key">name</span>        : <span class="t-value">"Pasqua Theatre"</span></div>
+        <div class="t-line"><span class="t-key">type</span>        : <span class="t-value">"Media Discovery & Distribution Node"</span></div>
+        <div class="t-line"><span class="t-key">status</span>      : <span class="t-value" style="color:var(--green);">ACTIVE // ALL ENDPOINTS LIVE</span></div>
+        <div class="t-line"><span class="t-key">signal</span>      : <span class="t-value">CLEAN</span></div>
+        <div class="t-blank"></div>
+        <div class="t-line t-comment"># ── WHAT WE ARE ──</div>
+        <div class="t-blank"></div>
+        <div class="t-line"><span class="t-prompt">$</span> cat system/description.txt</div>
+        <div class="t-blank"></div>
+        <div class="t-line">Pasqua Theatre is a next-generation media access platform.</div>
+        <div class="t-line">We index films and audio tracks so you can find them fast,</div>
+        <div class="t-line">preview them clean, and pull them direct — no noise, no lag.</div>
+        <div class="t-blank"></div>
+        <div class="t-line">The interface is built for signal precision.</div>
+        <div class="t-line">Everything loads fast. Everything downloads clean.</div>
+        <div class="t-line">Your library syncs local. No cloud dependency.</div>
+      </div>
+    </div>
+
+    <!-- TERMINAL WINDOW 2 -->
+    <div class="terminal-window">
+      <div class="terminal-topbar">
+        <div class="terminal-dot t-red"></div>
+        <div class="terminal-dot t-yellow"></div>
+        <div class="terminal-dot t-green-dot"></div>
+        <span class="terminal-title">pasqua-theatre :: stack.sh</span>
+      </div>
+      <div class="terminal-body" id="term2">
+        <div class="t-line t-comment"># ── TECH STACK & ARCHITECTURE ──</div>
+        <div class="t-blank"></div>
+        <div class="t-line"><span class="t-prompt">$</span> cat system/stack.json</div>
+        <div class="t-blank"></div>
+        <div class="t-line"><span class="t-key">runtime</span>     : <span class="t-value">Node.js + Express</span></div>
+        <div class="t-line"><span class="t-key">frontend</span>    : <span class="t-value">Vanilla HTML/CSS/JS — zero framework overhead</span></div>
+        <div class="t-line"><span class="t-key">data</span>        : <span class="t-value">Local JSON index — fast, portable, no DB required</span></div>
+        <div class="t-line"><span class="t-key">deploy</span>      : <span class="t-value">Render.com — free tier compatible</span></div>
+        <div class="t-line"><span class="t-key">library</span>     : <span class="t-value">localStorage — your data stays on your machine</span></div>
+        <div class="t-line"><span class="t-key">ui</span>          : <span class="t-value">Cyber neomorphic dark — Orbitron + Share Tech Mono</span></div>
+        <div class="t-blank"></div>
+        <div class="t-line t-comment"># ── HOW IT WORKS ──</div>
+        <div class="t-blank"></div>
+        <div class="t-line"><span class="t-prompt">$</span> cat system/flow.txt</div>
+        <div class="t-blank"></div>
+        <div class="t-line">1. Search the film or audio archive by title, artist, or genre.</div>
+        <div class="t-line">2. Preview tracks directly in the browser. No account needed.</div>
+        <div class="t-line">3. Hit DOWNLOAD — the boot sequence fires, transfer begins.</div>
+        <div class="t-line">4. Your file lands in Downloads. Item saved to your Library.</div>
+        <div class="t-line">5. Library lives in your browser. Cleared when you clear storage.</div>
+      </div>
+    </div>
+
+    <!-- ASCII ART -->
+    <div class="ascii-section">
+      <pre class="ascii-art">
+██████╗  █████╗ ███████╗ ██████╗ ██╗   ██╗ █████╗
+██╔══██╗██╔══██╗██╔════╝██╔═══██╗██║   ██║██╔══██╗
+██████╔╝███████║███████╗██║   ██║██║   ██║███████║
+██╔═══╝ ██╔══██║╚════██║██║▄▄ ██║██║   ██║██╔══██║
+██║     ██║  ██║███████║╚██████╔╝╚██████╔╝██║  ██║
+╚═╝     ╚═╝  ╚═╝╚══════╝ ╚══▀▀═╝  ╚═════╝ ╚═╝  ╚═╝
+      </pre>
+      <div style="font-size:0.65rem;color:var(--text-dim);letter-spacing:0.2em;">T H E A T R E // NODE v1.0 // ALL SYSTEMS OPERATIONAL</div>
+    </div>
+
+    <!-- CONTACT -->
+    <div class="terminal-window">
+      <div class="terminal-topbar">
+        <div class="terminal-dot t-red"></div>
+        <div class="terminal-dot t-yellow"></div>
+        <div class="terminal-dot t-green-dot"></div>
+        <span class="terminal-title">pasqua-theatre :: contact.sh</span>
+      </div>
+      <div class="terminal-body" id="term3">
+        <div class="t-line t-comment"># ── CONTACT & SIGNAL ──</div>
+        <div class="t-blank"></div>
+        <div class="t-line"><span class="t-prompt">$</span> cat contact/info.json</div>
+        <div class="t-blank"></div>
+        <div class="t-line"><span class="t-key">network</span>     : <span class="t-value">Pasqua Theatre Signal Network</span></div>
+        <div class="t-line"><span class="t-key">node</span>        : <span class="t-value">Primary Distribution Node // Online</span></div>
+        <div class="t-line"><span class="t-key">contact</span>     : <span class="t-value">admin@pasquatheatre.net</span></div>
+        <div class="t-line"><span class="t-key">uptime</span>      : <span class="t-value" style="color:var(--green);">99.9% // 24/7 NODE OPERATION</span></div>
+        <div class="t-blank"></div>
+        <div class="t-line t-warn"># All content served through Pasqua Theatre is for</div>
+        <div class="t-line t-warn"># authorized access only. Respect intellectual property.</div>
+        <div class="t-line t-warn"># Signal responsibly.</div>
+        <div class="t-blank"></div>
+        <div class="t-line"><span class="t-prompt">$</span> <span class="empty-cursor"></span></div>
+      </div>
+    </div>
+
+    <div class="contact-row">
+      <a href="/" class="btn">← BACK TO HOME</a>
+      <a href="/movies" class="btn btn-purple">▸ BROWSE FILMS</a>
+      <a href="/music" class="btn btn-pink">♪ BROWSE MUSIC</a>
+    </div>
+  </div>
+</main>
+
+<script src="/js/main.js"></script>
+<script>
+// Animate terminal lines after page loads
+function animateTerminal(id, delay = 0) {
+  const lines = document.querySelectorAll(`#${id} .t-line`);
+  lines.forEach((line, i) => {
+    setTimeout(() => {
+      line.style.opacity = '1';
+    }, delay + i * 60);
+  });
+}
+
+// Fire after loader
+const origRunLoader = window.__loaderDone;
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => {
+    animateTerminal('term1', 200);
+    animateTerminal('term2', 200 + 14 * 60 + 300);
+    animateTerminal('term3', 200 + 28 * 60 + 600);
+  }, 2000); // After boot sequence
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pasqua Theatre — Local Library</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+
+<div id="loader">
+  <div class="boot-logo">PASQUA THEATRE</div>
+  <div class="boot-lines"></div>
+  <div class="progress-bar-wrap"><div class="progress-bar"></div></div>
+</div>
+
+<div id="dl-overlay">
+  <div class="dl-title">▸ INITIATING SECURE DOWNLOAD</div>
+  <div class="dl-lines"></div>
+  <div class="dl-bar-wrap"><div class="dl-bar"></div></div>
+</div>
+
+<nav>
+  <a href="/" class="nav-logo">PASQUA THEATRE</a>
+  <ul class="nav-links">
+    <li><a href="/">HOME</a></li>
+    <li><a href="/movies">MOVIES</a></li>
+    <li><a href="/music">MUSIC</a></li>
+    <li><a href="/library">LIBRARY</a></li>
+    <li><a href="/about">ABOUT</a></li>
+  </ul>
+  <button class="nav-burger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="mobile-menu">
+  <a href="/">HOME</a>
+  <a href="/movies">MOVIES</a>
+  <a href="/music">MUSIC</a>
+  <a href="/library">LIBRARY</a>
+  <a href="/about">ABOUT</a>
+</div>
+
+<main>
+  <div class="page-header fade-in-after-load">
+    <div class="section-label">> LOCAL NODE // SYNCED FILES</div>
+    <h1 class="page-title">YOUR <span>LIBRARY</span></h1>
+    <p class="page-desc">Everything you've pulled from the network. Stored local.</p>
+  </div>
+
+  <section class="section fade-in-after-load">
+    <!-- TABS -->
+    <div class="lib-tabs">
+      <button class="lib-tab active" data-tab="movies">◈ FILMS</button>
+      <button class="lib-tab" data-tab="music">♪ TRACKS</button>
+    </div>
+
+    <!-- FILM LIST -->
+    <div id="tab-movies">
+      <div id="movies-list"></div>
+    </div>
+
+    <!-- MUSIC LIST -->
+    <div id="tab-music" style="display:none;">
+      <div id="music-list"></div>
+    </div>
+  </section>
+</main>
+
+<script src="/js/main.js"></script>
+<script>
+function formatDate(iso) {
+  if (!iso) return '—';
+  const d = new Date(iso);
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+function emptyState(type) {
+  return `
+    <div class="empty-state">
+      <div class="empty-icon">${type === 'movies' ? '◻' : '♪'}</div>
+      <div style="font-size:0.85rem;margin-bottom:8px;">> NO FILES SYNCED TO LOCAL NODE <span class="empty-cursor"></span></div>
+      <div style="font-size:0.7rem;color:var(--text-dim);margin-bottom:24px;">Your downloads appear here after you pull them from the archive.</div>
+      <a href="${type === 'movies' ? '/movies' : '/music'}" class="btn">▸ BROWSE ${type === 'movies' ? 'FILMS' : 'TRACKS'}</a>
+    </div>`;
+}
+
+function movieLibItem(m) {
+  return `
+    <div class="lib-item fade-in">
+      <img src="${m.cover || 'https://picsum.photos/seed/' + m.id + '/60/90'}" style="width:44px;height:60px;object-fit:cover;filter:saturate(0.7);" alt="">
+      <div class="lib-item-info">
+        <div class="lib-item-title">${m.title}</div>
+        <div class="lib-item-meta">FILM &nbsp;·&nbsp; Saved ${formatDate(m.savedAt)}</div>
+      </div>
+      <button class="btn btn-sm btn-pink" onclick="removeItem('movies', ${m.id}, this.closest('.lib-item'))">✕ REMOVE</button>
+    </div>`;
+}
+
+function musicLibItem(m) {
+  return `
+    <div class="lib-item fade-in">
+      <img src="${m.cover || 'https://picsum.photos/seed/m' + m.id + '/60/60'}" style="width:48px;height:48px;object-fit:cover;filter:saturate(0.7);" alt="">
+      <div class="lib-item-info">
+        <div class="lib-item-title">${m.title}</div>
+        <div class="lib-item-meta">${m.artist || 'UNKNOWN ARTIST'} &nbsp;·&nbsp; TRACK &nbsp;·&nbsp; Saved ${formatDate(m.savedAt)}</div>
+      </div>
+      <button class="btn btn-sm btn-pink" onclick="removeItem('music', ${m.id}, this.closest('.lib-item'))">✕ REMOVE</button>
+    </div>`;
+}
+
+function removeItem(type, id, el) {
+  const lib = PT.getLibrary();
+  lib[type] = (lib[type] || []).filter(x => x.id !== id);
+  localStorage.setItem('pq_library', JSON.stringify(lib));
+  el.style.transition = 'opacity 0.3s, transform 0.3s';
+  el.style.opacity = '0';
+  el.style.transform = 'translateX(20px)';
+  setTimeout(() => { el.remove(); renderLib(); }, 300);
+}
+
+function renderLib() {
+  const lib = PT.getLibrary();
+  const movies = lib.movies || [];
+  const music = lib.music || [];
+
+  document.getElementById('movies-list').innerHTML = movies.length
+    ? movies.map(movieLibItem).join('')
+    : emptyState('movies');
+
+  document.getElementById('music-list').innerHTML = music.length
+    ? music.map(musicLibItem).join('')
+    : emptyState('music');
+
+  // Update tab counts
+  document.querySelector('[data-tab="movies"]').textContent = `◈ FILMS (${movies.length})`;
+  document.querySelector('[data-tab="music"]').textContent = `♪ TRACKS (${music.length})`;
+}
+
+// TABS
+document.querySelectorAll('.lib-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.lib-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('tab-movies').style.display = tab.dataset.tab === 'movies' ? 'block' : 'none';
+    document.getElementById('tab-music').style.display = tab.dataset.tab === 'music' ? 'block' : 'none';
+  });
+});
+
+// Render after loader
+const origLoader = window.PT;
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(renderLib, 100);
+});
+
+renderLib();
+</script>
+</body>
+</html>
