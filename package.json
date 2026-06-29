@@ -1,0 +1,13 @@
+{
+  "name": "pasqua-theatre",
+  "version": "1.0.0",
+  "description": "Pasqua Theatre — cyber neomorphic media platform",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
