@@ -1,0 +1,134 @@
+[
+  {
+    "id": 1,
+    "title": "Neon Drift",
+    "artist": "VΛULT",
+    "album": "Signal Zero",
+    "genre": "Electronic",
+    "duration": "4:23",
+    "cover": "https://picsum.photos/seed/neondrift/300/300",
+    "audioPreview": "https://www.w3schools.com/html/horse.mp3",
+    "downloadUrl": "https://www.w3schools.com/html/horse.mp3"
+  },
+  {
+    "id": 2,
+    "title": "Ghost Frequency",
+    "artist": "KIRA X",
+    "album": "Phantom Sessions",
+    "genre": "Synthwave",
+    "duration": "3:47",
+    "cover": "https://picsum.photos/seed/ghostfreq/300/300",
+    "audioPreview": "https://www.w3schools.com/html/horse.mp3",
+    "downloadUrl": "https://www.w3schools.com/html/horse.mp3"
+  },
+  {
+    "id": 3,
+    "title": "Cold Sector",
+    "artist": "MXRE",
+    "album": "Arctic Code",
+    "genre": "Dark Ambient",
+    "duration": "5:12",
+    "cover": "https://picsum.photos/seed/coldsec/300/300",
+    "audioPreview": "https://www.w3schools.com/html/horse.mp3",
+    "downloadUrl": "https://www.w3schools.com/html/horse.mp3"
+  },
+  {
+    "id": 4,
+    "title": "Pulse Array",
+    "artist": "DRVN",
+    "album": "Frequency Maps",
+    "genre": "Electronic",
+    "duration": "4:01",
+    "cover": "https://picsum.photos/seed/pulsearr/300/300",
+    "audioPreview": "https://www.w3schools.com/html/horse.mp3",
+    "downloadUrl": "https://www.w3schools.com/html/horse.mp3"
+  },
+  {
+    "id": 5,
+    "title": "Void Walk",
+    "artist": "NΛRX",
+    "album": "The Null Tapes",
+    "genre": "Hip-Hop",
+    "duration": "3:33",
+    "cover": "https://picsum.photos/seed/voidwalk/300/300",
+    "audioPreview": "https://www.w3schools.com/html/horse.mp3",
+    "downloadUrl": "https://www.w3schools.com/html/horse.mp3"
+  },
+  {
+    "id": 6,
+    "title": "Red Sector A",
+    "artist": "CIPHER",
+    "album": "Lockdown",
+    "genre": "Synthwave",
+    "duration": "4:55",
+    "cover": "https://picsum.photos/seed/redsec/300/300",
+    "audioPreview": "https://www.w3schools.com/html/horse.mp3",
+    "downloadUrl": "https://www.w3schools.com/html/horse.mp3"
+  },
+  {
+    "id": 7,
+    "title": "Terminal Bloom",
+    "artist": "ΛXON",
+    "album": "Overgrowth",
+    "genre": "Electronic",
+    "duration": "3:58",
+    "cover": "https://picsum.photos/seed/termblm/300/300",
+    "audioPreview": "https://www.w3schools.com/html/horse.mp3",
+    "downloadUrl": "https://www.w3schools.com/html/horse.mp3"
+  },
+  {
+    "id": 8,
+    "title": "Mirror Trap",
+    "artist": "VΛULT",
+    "album": "Signal Zero",
+    "genre": "Dark Ambient",
+    "duration": "6:10",
+    "cover": "https://picsum.photos/seed/mirrortr/300/300",
+    "audioPreview": "https://www.w3schools.com/html/horse.mp3",
+    "downloadUrl": "https://www.w3schools.com/html/horse.mp3"
+  },
+  {
+    "id": 9,
+    "title": "Backroom Static",
+    "artist": "MXRE",
+    "album": "Arctic Code",
+    "genre": "Hip-Hop",
+    "duration": "2:59",
+    "cover": "https://picsum.photos/seed/backrms/300/300",
+    "audioPreview": "https://www.w3schools.com/html/horse.mp3",
+    "downloadUrl": "https://www.w3schools.com/html/horse.mp3"
+  },
+  {
+    "id": 10,
+    "title": "Subcarrier",
+    "artist": "KIRA X",
+    "album": "Phantom Sessions",
+    "genre": "Electronic",
+    "duration": "4:44",
+    "cover": "https://picsum.photos/seed/subcarr/300/300",
+    "audioPreview": "https://www.w3schools.com/html/horse.mp3",
+    "downloadUrl": "https://www.w3schools.com/html/horse.mp3"
+  },
+  {
+    "id": 11,
+    "title": "Low Earth",
+    "artist": "DRVN",
+    "album": "Frequency Maps",
+    "genre": "Synthwave",
+    "duration": "5:30",
+    "cover": "https://picsum.photos/seed/lowearth/300/300",
+    "audioPreview": "https://www.w3schools.com/html/horse.mp3",
+    "downloadUrl": "https://www.w3schools.com/html/horse.mp3"
+  },
+  {
+    "id": 12,
+    "title": "Black Lattice",
+    "artist": "CIPHER",
+    "album": "Lockdown",
+    "genre": "Dark Ambient",
+    "duration": "7:02",
+    "cover": "https://picsum.photos/seed/blacklat/300/300",
+    "audioPreview": "https://www.w3schools.com/html/horse.mp3",
+    "downloadUrl": "https://www.w3schools.com/html/horse.mp3"
+  }
+]
