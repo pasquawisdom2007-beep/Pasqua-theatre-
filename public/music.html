@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pasqua Theatre — Audio Archive</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+
+<div id="loader">
+  <div class="boot-logo">PASQUA THEATRE</div>
+  <div class="boot-lines"></div>
+  <div class="progress-bar-wrap"><div class="progress-bar"></div></div>
+</div>
+
+<div id="dl-overlay">
+  <div class="dl-title">▸ INITIATING SECURE DOWNLOAD</div>
+  <div class="dl-lines"></div>
+  <div class="dl-bar-wrap"><div class="dl-bar"></div></div>
+</div>
+
+<nav>
+  <a href="/" class="nav-logo">PASQUA THEATRE</a>
+  <ul class="nav-links">
+    <li><a href="/">HOME</a></li>
+    <li><a href="/movies">MOVIES</a></li>
+    <li><a href="/music">MUSIC</a></li>
+    <li><a href="/library">LIBRARY</a></li>
+    <li><a href="/about">ABOUT</a></li>
+  </ul>
+  <button class="nav-burger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="mobile-menu">
+  <a href="/">HOME</a>
+  <a href="/movies">MOVIES</a>
+  <a href="/music">MUSIC</a>
+  <a href="/library">LIBRARY</a>
+  <a href="/about">ABOUT</a>
+</div>
+
+<main>
+  <div class="page-header fade-in-after-load">
+    <div class="section-label">> AUDIO ARCHIVE // STREAMING LIVE</div>
+    <h1 class="page-title">AUDIO <span>ARCHIVE</span></h1>
+    <p class="page-desc">Find the frequency. Capture the signal. Own the track.</p>
+  </div>
+
+  <section class="section fade-in-after-load">
+
+    <!-- SEARCH -->
+    <div class="search-wrap" style="position:relative;">
+      <span class="search-icon">♪</span>
+      <input type="text" class="search-input" id="search"
+        placeholder="> SEARCH AUDIO ARCHIVE... (e.g. Essence Wizkid, Drake, Burna Boy)"
+        autocomplete="off">
+      <div id="search-spinner" style="
+        display:none;position:absolute;right:16px;top:50%;transform:translateY(-50%);
+        font-size:0.7rem;color:var(--cyan);letter-spacing:0.1em;animation:blink 1s infinite;">
+        SCANNING...
+      </div>
+    </div>
+
+    <!-- STATUS LINE -->
+    <div id="result-count" style="font-size:0.7rem;color:var(--text-dim);letter-spacing:0.1em;margin-bottom:24px;">
+      > TYPE A SONG OR ARTIST NAME TO SEARCH
+    </div>
+
+    <!-- RESULTS GRID -->
+    <div class="music-cards-grid" id="music-grid">
+      <div style="color:var(--text-dim);font-size:0.8rem;padding:60px 0;grid-column:1/-1;text-align:center;">
+        <div style="font-size:2rem;margin-bottom:16px;opacity:0.3;">♪</div>
+        <div>> AWAITING QUERY — ENTER A TRACK OR ARTIST ABOVE</div>
+      </div>
+    </div>
+
+  </section>
+</main>
+
+<script src="/js/main.js"></script>
+<script>
+// ── Music search card — search result state ──────────────────────────────────
+// Shows the track info returned from the proxy search.
+// Download triggers the full multi-strategy chain server-side.
+
+function musicSearchCard(m) {
+  const id = m.id || m.title.replace(/\s+/g, '_') + '_' + Date.now();
+  const thumbnail = m.thumbnail || m.cover || m.image || '';
+  const title     = m.title || 'Unknown Title';
+  const artist    = m.artist || 'Unknown Artist';
+  const duration  = m.duration || '';
+  const dlUrl     = m.url || m.downloadUrl || '#';
+
+  const safeItem = JSON.stringify({ id, title, artist, type: 'music', cover: thumbnail }).replace(/"/g, '&quot;');
+
+  return `
+    <div class="music-card fade-in" style="flex-direction:column;display:block;">
+      <div style="display:grid;grid-template-columns:90px 1fr;gap:0;">
+        ${thumbnail
+          ? `<img class="music-cover" style="width:90px;height:90px;object-fit:cover;" src="${thumbnail}" alt="${title}" loading="lazy"
+               onerror="this.outerHTML='<div style=\\'width:90px;height:90px;background:var(--bg3);display:flex;align-items:center;justify-content:center;color:var(--text-dim);font-size:0.6rem;padding:4px;text-align:center;\\'>♪</div>'">`
+          : `<div style="width:90px;height:90px;background:var(--bg3);display:flex;align-items:center;justify-content:center;color:var(--text-dim);font-size:1.4rem;">♪</div>`
+        }
+        <div class="music-body">
+          <div>
+            <div class="music-title">${title}</div>
+            <div class="music-artist">${artist}</div>
+          </div>
+          <div class="music-meta">
+            <span class="tag tag-green">AUDIO</span>
+            ${duration ? `<span class="music-duration">${duration}</span>` : ''}
+          </div>
+        </div>
+      </div>
+      <div style="padding:12px 14px;border-top:1px solid rgba(0,245,255,0.08);">
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          <button class="btn btn-dl btn-sm"
+            data-download="${dlUrl}"
+            data-name="${title}"
+            data-type="music"
+            data-item="${safeItem}">
+            ⬇ DOWNLOAD
+          </button>
+          <span style="font-size:0.6rem;color:var(--text-dim);letter-spacing:0.08em;">
+            > SIGNAL LOCKED
+          </span>
+        </div>
+      </div>
+    </div>`;
+}
+
+// ── Search state ─────────────────────────────────────────────────────────────
+let currentQuery = '';
+let isSearching  = false;
+
+async function doMusicSearch(query) {
+  if (!query || query.length < 2) {
+    document.getElementById('music-grid').innerHTML = `
+      <div style="color:var(--text-dim);font-size:0.8rem;padding:60px 0;grid-column:1/-1;text-align:center;">
+        <div style="font-size:2rem;margin-bottom:16px;opacity:0.3;">♪</div>
+        <div>> AWAITING QUERY — ENTER A TRACK OR ARTIST ABOVE</div>
+      </div>`;
+    document.getElementById('result-count').textContent = '> TYPE A SONG OR ARTIST NAME TO SEARCH';
+    return;
+  }
+
+  if (isSearching) return;
+  isSearching  = true;
+  currentQuery = query;
+
+  const spinner = document.getElementById('search-spinner');
+  const grid    = document.getElementById('music-grid');
+  const count   = document.getElementById('result-count');
+
+  spinner.style.display = 'block';
+  count.textContent = `> LOCKING SIGNAL FOR "${query.toUpperCase()}"...`;
+  grid.innerHTML = `<div style="color:var(--cyan);font-size:0.75rem;padding:40px 0;grid-column:1/-1;text-align:center;animation:blink 1s infinite;">
+    > ROUTING THROUGH DOWNLOAD NODE CHAIN...<br>
+    <span style="color:var(--text-dim);font-size:0.62rem;margin-top:8px;display:block;">Trying up to 9 sources — this may take 5–15 seconds</span>
+  </div>`;
+
+  try {
+    const res = await fetch('/api/proxy/musicsearch?q=' + encodeURIComponent(query));
+    const data = await res.json();
+
+    spinner.style.display = 'none';
+    isSearching = false;
+
+    if (!data.status || !data.url) {
+      count.textContent = `> NO SIGNAL FOUND FOR "${query.toUpperCase()}"`;
+      grid.innerHTML = `
+        <div style="color:var(--text-dim);font-size:0.8rem;padding:60px 0;grid-column:1/-1;text-align:center;">
+          <div style="font-size:2rem;margin-bottom:16px;opacity:0.2;">◻</div>
+          <div>> ALL ${9} NODES EXHAUSTED — NO SIGNAL FOR "${query.toUpperCase()}"</div>
+          <div style="font-size:0.65rem;margin-top:8px;color:var(--text-dim);">Try a different title or check spelling</div>
+        </div>`;
+      return;
+    }
+
+    count.textContent = `> SIGNAL LOCKED — "${(data.title || query).toUpperCase()}"`;
+    grid.innerHTML = musicSearchCard(data);
+
+  } catch (err) {
+    spinner.style.display = 'none';
+    isSearching = false;
+    count.textContent = `> NODE ERROR`;
+    grid.innerHTML = `
+      <div style="color:var(--pink);font-size:0.75rem;padding:40px 0;grid-column:1/-1;">
+        > NODE UNREACHABLE: ${err.message}<br>
+        <span style="color:var(--text-dim);font-size:0.65rem;">Check server status</span>
+      </div>`;
+  }
+}
+
+// Debounced search — 600ms after typing stops (chain takes time, no point firing early)
+let searchTimer;
+document.getElementById('search').addEventListener('input', e => {
+  clearTimeout(searchTimer);
+  const val = e.target.value.trim();
+  searchTimer = setTimeout(() => doMusicSearch(val), 600);
+});
+
+// Immediate on Enter
+document.getElementById('search').addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    clearTimeout(searchTimer);
+    doMusicSearch(e.target.value.trim());
+  }
+});
+</script>
+</body>
+</html>
